@@ -17,8 +17,8 @@ class AddMediaId extends Migration
             $table->unsignedInteger('media_id');
             $table->foreign('media_id')->references('id')->on('media')->onDelete('cascade');
 
-            $table->unsignedInteger('post_id');
-            $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
+            $table->unsignedInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
 
         });
     }
