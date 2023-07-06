@@ -26,12 +26,12 @@ class PostFactory extends Factory
             'view' => $this->faker->numberBetween(0, 1000),
             'slug' => $this->faker->slug,
             'meta_title'=>$this->faker->title,
-            'meta_desc'=>$this->faker->paragraph,
+            'meta_desc'=>$this->faker->sentence,
             'meta_keyword'=>$this->faker->sentence,
 //            'meta_keyword'=> implode(', ', $keywords),
 
-            'media_id' => Media::factory()->create()->id,
-            'user_id' => User::factory()->create()->id,
+
+//            'user_id' => User::factory()->create()->id,
 
 
         ];

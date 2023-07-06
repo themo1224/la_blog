@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\dummyApi;
+
+use App\Http\Controllers\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -20,3 +22,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('data', [dummyApi::class, 'getdata']);
+// ------------   POST  ------------------------------
+Route::post('/add_post', [PostController::class, 'add_post']);
+Route::get('get_post', [PostController::class, 'get_posts']);
+Route::get('get_post/{slug}', [PostController::class, 'show']);
+
+
+// -----------     CATEGORY      -------------------------------
+Route::resource('get_category', \App\Http\Controllers\CategoryController::class);

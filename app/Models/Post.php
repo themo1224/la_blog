@@ -11,10 +11,10 @@ class Post extends Model
 
     public function category()
     {
-        return $this->belongsToMany(Category::class);
+        return $this->belongsToMany(Category::class, 'post_category', 'post_id', 'category_id');
     }
     public function media()
     {
-        return $this->hasMany(Media::class);
+        return $this->belongsToMany(Media::class, 'media_post');
     }
 }

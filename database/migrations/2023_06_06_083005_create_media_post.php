@@ -14,9 +14,9 @@ class CreateMediaPost extends Migration
     public function up()
     {
         Schema::create('media_post', function (Blueprint $table) {
-            $table->unsignedInteger('post_id');
+            $table->bigInteger('post_id')->unsigned()->index()->nullable();
             $table->foreign('post_id')->references('id')->on('posts')->onDelete('cascade');
-            $table->unsignedInteger('media_id');
+            $table->bigInteger('media_id')->unsigned()->index()->nullable();
             $table->foreign('media_id')->references('id')->on('media')->onDelete('cascade');
         });
     }
