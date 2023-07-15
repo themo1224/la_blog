@@ -14,7 +14,11 @@ class AddMediaIdToPosts extends Migration
     public function up()
     {
         Schema::table('posts', function (Blueprint $table) {
-            //
+            $table->bigInteger('media_id')->unsigned()->index()->nullable();
+            $table->foreign('media_id')->references('id')->on('media')->onDelete('cascade');
+            $table->bigInteger('user_id')->unsigned()->index()->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+
         });
     }
 
@@ -26,7 +30,9 @@ class AddMediaIdToPosts extends Migration
     public function down()
     {
         Schema::table('posts', function (Blueprint $table) {
-            //
+            $table->dropForeign(['user_id']);
+            $table->dropForeign(['media_id']);
+            $table->dropColumn(['category_id', 'user_id']);
         });
     }
 }

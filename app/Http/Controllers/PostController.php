@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostRequest;
 use App\Models\Category;
 use App\Models\Media;
 use App\Models\Post;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Storage;
 
 
 class PostController extends Controller
@@ -17,44 +18,58 @@ class PostController extends Controller
         return view('post.add_post', compact('categories'));
     }
 
-    public function add_post(Request $request)
+    public function add_post(Request $request, PostRequest $postrequest)
     {
-        $post = new Post;
-        $post->title= $request->input('title');
-        $post->content= $request->input('content');
-        $post->slug= $request->input('slug');
-        $post->meta_title= $request->input('meta_title');
-        $post->meta_desc= $request->input('meta_desc');
-//        $post->media_id= $request->input('media_id');
-//        $post->user_id= $request->input('user_id');
-        $post->meta_keyword= $request->input('meta_keyword');
-//        $category= $request->input('category');
-//        dd((int)$request->category);
-        $validatedData = $request->validate([
-            'images' => 'required|array',
-            'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
-            // Other validation rules for title, content, etc.
-        ]);
-        $defaultImageUploaded = false;
-        foreach ($request->file('images') as $image) {
-            $path = $image->store('images', 'public'); // Store the image in the 'public' disk under the 'images' directory
 
-            $media = new Media;
-            $media->title = $image->getClientOriginalName();
-            $media->type = $image->getClientOriginalExtension();
-            $media->path = $path;
+        $validatedData = $postrequest->validated();
+
+        // ---------- POST things ------------------
+
+        $post = new Post;
+        $post->title= $postrequest->input('title');
+        $post->content= $postrequest->input('content');
+        $post->slug= $request->input('slug');
+        $post->meta_title= $postrequest->input('meta_title');
+        $post->meta_desc= $request->input('meta_desc');
+        $post->meta_keyword= $request->input('meta_keyword');
+
+        // ---------- IMAGE things ------------------
+        $defaultImageUploaded = false;
+
+        foreach ($postrequest->file("image") as $file){
+            # name
+            $imagename= $file->getClientOriginalName();
+            $uinqeimage= time().rand(99,999).$imagename;
+            # save image
+            Storage::putFileAs('public/images',$file,$uinqeimage);
+
+            $size = $file->getSize();
+            $type= $file->getClientOriginalExtension();
+            $path = 'public/images';
+            # store image
+            $media= new Media();
+            $media->title= $uinqeimage;
+            $media->size= $size;
+            $media->path= $path;
+            $media->type= $type;
             $media->save();
 
-            if (!$defaultImageUploaded) {
-                $post->default_image_id = $media->id;
+            # add default image
+
+            if ($defaultImageUploaded==false) {
+                $post->media_id = $media->id;
                 $defaultImageUploaded = true;
             } else {
-                $post->gallery()->attach($media);
+                $post->media()->attach($media);
             }
         }
+
         $post->save();
 
+        # update post_category and media_post pivot table
         $post->category()->sync($request->category);
+        $post->media()->sync([$media->id]);
+
 
         // Return a JSON response with the created post
         return response()->json($post, 201);
@@ -72,6 +87,18 @@ class PostController extends Controller
         $post_id->view = $post_id->view + 1;
         $post_id->save();
         return response()->json($post_id);
+    }
+    public function image(){
+
+            return view('post.upload');
+
+    }
+    public function show_post()
+    {
+        $files =
+        $posts= Post::with('default')->get();
+
+        return view('show_posts', compact('posts', 'files'));
     }
 
 }

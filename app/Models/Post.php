@@ -15,6 +15,10 @@ class Post extends Model
     }
     public function media()
     {
-        return $this->belongsToMany(Media::class, 'media_post');
+        return $this->belongsToMany(Media::class, 'media_post', 'post_id');
+    }
+    public function default()
+    {
+        return $this->belongsTo(Media::class, 'media_id', 'id');
     }
 }

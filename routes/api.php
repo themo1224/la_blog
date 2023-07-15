@@ -28,5 +28,6 @@ Route::get('get_post', [PostController::class, 'get_posts']);
 Route::get('get_post/{slug}', [PostController::class, 'show']);
 
 
+
 // -----------     CATEGORY      -------------------------------
 Route::resource('get_category', \App\Http\Controllers\CategoryController::class);

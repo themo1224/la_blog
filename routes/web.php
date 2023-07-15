@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,4 +16,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/posts', [PostController::class, 'posts']);
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth'])->name('dashboard');
+
+require __DIR__.'/auth.php';
+
+Route::get('posts', [\App\Http\Controllers\PostController::class, 'posts']);
+Route::get('show_post', [\App\Http\Controllers\PostController::class, 'show_post']);
+Route::get('assign_permission', [\App\Http\Controllers\admin\AdminController::class, 'assign_permission']);

@@ -18,10 +18,10 @@
     <input type="text" name="meta_title" placeholder="meta_title">
     <input type="number" name="view" placeholder="view">
     <input type="text" name="meta_desc" placeholder="meta_desc">
-    <input type="file" name="image" id="image" multiple>
-    <input type="number" name="media_id" placeholder="media_id">
+    <input type="file" name="image[]" id="image" multiple>
+
     <input type="number" name="user_id" placeholder="user_id">
-    <select name="category[]" id="" multiple>
+    <select name=" []" id="" multiple>
         @foreach($categories as $category)
         <option value="{{$category->id}}">{{$category->id . '. ' . $category->title}}</option>
         @endforeach
